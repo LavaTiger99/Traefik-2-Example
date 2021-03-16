@@ -1,0 +1,19 @@
+version: "3"
+
+networks:
+  traefik_entrypoint:
+    external: true
+
+services:
+  webserver:
+    image: nginx
+    networks:
+      - traefik_entrypoint
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{container_name}.entrypoints=websecure"
+      - "traefik.http.routers.{container_name}.rule=Host(`sub.domain.com`)"
+      - "traefik.http.routers.{container_name}.tls=true"
+      - "traefik.http.routers.{container_name}.tls.certresolver=lets-encrypt"
+      - "traefik.port=8080"
+    restart: unless-stopped

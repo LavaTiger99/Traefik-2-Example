@@ -1,0 +1,21 @@
+version: '3.1'
+
+services:
+
+  app:
+    image: traefik:latest
+    restart: always
+    networks:
+      - entrypoint
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.toml:/traefik.toml:ro
+      - ./traefik_static.toml:/traefik_static.toml:ro
+      - ./acme.json:/acme.json
+
+networks:
+  entrypoint:
+    driver: bridge

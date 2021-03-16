@@ -1,0 +1,34 @@
+[http.middlewares.simpleAuth.basicAuth]
+  users = [
+    "admin:$passwordhash"
+  ]
+# htpasswd -nb username -p
+
+[http.routers.api]
+  rule = "Host(`traefik.domain.com`)"
+  entrypoints = ["websecure"]
+  middlewares = ["simpleAuth"]
+  service = "api@internal"
+  [http.routers.api.tls]
+    certResolver = "lets-encrypt"
+
+[http.routers]
+  [http.routers.app1]
+    rule = "Host(`app1.domain.com`)"
+    service = "app1"
+    [http.routers.app1.tls]
+      certResolver = "lets-encrypt"
+  [http.routers.app2]
+    # By default, routers listen to every entry points
+    rule = "Host(`app2.domain.com`)"
+    service = "app2"
+    [http.routers.app2.tls]
+      certResolver = "lets-encrypt"
+
+[http.services]
+  [http.services.app1.loadBalancer]
+    [[http.services.app1.loadBalancer.servers]]
+      url = "http://10.0.0.1:1234"
+  [http.services.app2.loadBalancer]
+    [[http.services.app2.loadBalancer.servers]]
+      url = "http://10.0.0.2:5678"
