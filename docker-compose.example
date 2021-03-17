@@ -3,6 +3,8 @@ version: "3"
 networks:
   traefik_entrypoint:
     external: true
+  internal:
+    driver: bridge
 
 services:
   webserver:
@@ -16,4 +18,5 @@ services:
       - "traefik.http.routers.{container_name}.tls=true"
       - "traefik.http.routers.{container_name}.tls.certresolver=lets-encrypt"
       - "traefik.port=8080"
+      - "traefik.docker.network=traefik_entrypoint" #required if more than one network, otherwise may try using 'internal' or default and fail
     restart: unless-stopped
